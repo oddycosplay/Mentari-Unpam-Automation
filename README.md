@@ -1,6 +1,6 @@
 # Script Mentari harian
 
-Cek Forum Diskusi tiap matkul pada Pertemuan berikutnya (mulai 9). Kalau forum sudah terbuka: unduh Buku ISBN,
+Cek Forum Diskusi tiap matkul pada Pertemuan berikutnya (mulai 1). Kalau forum sudah terbuka: unduh Buku ISBN,
 Power Point, Artikel Riset, Materi Lainnya, catat link Video Ajar dan LINK VCON, screenshot, lalu tulis laporan.
 Kalau terkunci: matkul dilewati. Progres disimpan di `..\_progress.json`.
 
