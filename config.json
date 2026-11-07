@@ -1,0 +1,16 @@
+{
+  "baseDir": "D:\\unpam\\semester 7",
+  "dashboardUrl": "https://mentari.unpam.ac.id/",
+  "profileDir": "D:\\unpam\\semester 7\\_scripts\\chrome-profile",
+  "firstMeeting": 9,
+  "materialItems": ["Buku ISBN", "Power Point", "Artikel Riset", "Materi Lainnya"],
+  "linkItems": ["Video Ajar", "LINK VCON"],
+  "courses": [
+    { "title": "CUSTOMER RELATIONSHIP MANAGEMENT", "folder": "CUSTOMER RELATIONSHIP MANAGEMENT (CRM)" },
+    { "title": "TESTING DAN IMPLEMENTASI SISTEM", "folder": "TESTING DAN IMPLEMENTASI SISTEM" },
+    { "title": "SISTEM PENGELOLAAN CONTENT", "folder": "SISTEM PENGELOLAAN CONTENT" },
+    { "title": "KOMPUTER DAN MASYARAKAT", "folder": "KOMPUTER DAN MASYARAKAT" },
+    { "title": "OPTIMASI MESIN PENCARI", "folder": "OPTIMASI MESIN PENCARI" },
+    { "title": "AUDIT SISTEM INFORMASI", "folder": "AUDIT SISTEM INFORMASI" }
+  ]
+}

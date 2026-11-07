@@ -1,0 +1,14 @@
+{
+  "name": "mentari-harian",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "login": "node mentari.mjs --login",
+    "run": "node mentari.mjs",
+    "debug": "node mentari.mjs --debug"
+  },
+  "dependencies": {
+    "playwright": "^1.50.0"
+  }
+}
