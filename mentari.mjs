@@ -1,5 +1,5 @@
 // Mentari UNPAM harian: cek Forum Diskusi, unduh materi, screenshot, laporan.
-// TIDAK menyentuh Pretest, Posttest, Kuesioner, Penugasan, atau posting Forum.
+// Mencatat status Pretest, Posttest, Kuesioner, Penugasan, dan Forum Diskusi; tidak mengirimkan aktivitas.
 // Pakai:  node mentari.mjs --login   (sekali, login manual)
 //         node mentari.mjs           (jalan normal)
 //         node mentari.mjs --debug   (simpan HTML section ke _scripts/debug untuk kalibrasi selector)
@@ -53,6 +53,24 @@ async function openMeeting(page, n) {
   await header.scrollIntoViewIfNeeded();
   await header.click();
   await sleep(1200);
+}
+
+// Mencatat keberadaan dan tautan aktivitas; tidak membuka, menjawab, atau mengirimkannya.
+async function inspectActivity(page, name) {
+  const item = page.getByText(new RegExp(`^\\s*${esc(name)}\\s*$`, 'i')).first();
+  if ((await item.count()) === 0) return `${name}: item tidak ditemukan`;
+
+  const details = await item.evaluate((el) => {
+    const row = el.closest('li, a, button, [role="button"], [class*="item"], [class*="Item"]')
+      || el.parentElement;
+    const link = el.closest('a') || row?.querySelector('a');
+    const disabled = row?.getAttribute('aria-disabled') === 'true'
+      || row?.hasAttribute('disabled');
+    return { href: link?.href || '', disabled };
+  });
+
+  if (details.disabled) return `${name}: ditemukan, tetapi tampak nonaktif`;
+  return `${name}: ditemukan${details.href ? ` — ${details.href}` : ''}; perlu ditinjau manual`;
 }
 
 // true jika item "Forum Diskusi" terkunci/nonaktif. Heuristik; kalibrasi dengan --debug bila perlu.
@@ -129,15 +147,18 @@ async function main() {
         fs.mkdirSync(path.join(here, 'debug'), { recursive: true });
         fs.writeFileSync(path.join(here, 'debug', `${safe(course.folder)}_P${n}.html`), await page.content());
       }
+      for (const name of ['Pretest', 'Posttest', 'Kuesioner', 'Penugasan', 'Forum Diskusi']) {
+        report.push(`- ${await inspectActivity(page, name)}`);
+      }
       const f = await forumLocked(page);
       if (f.locked) {
-        report.push(`- Forum terkunci (${f.why}), dilewati.`, '');
+        report.push(`- Status Forum Diskusi: terkunci/tidak tersedia (${f.why}); dilewati.`, '');
         continue;
       }
       const dir = path.join(cfg.baseDir, course.folder, `Pertemuan ${n}`);
       fs.mkdirSync(dir, { recursive: true });
       const links = [];
-      report.push('- Forum terbuka, diproses.');
+      report.push('- Status Forum Diskusi: terbuka; isi/postingan tidak disentuh.');
       for (const name of cfg.materialItems) report.push(`- ${await grab(page, ctx, name, dir, links)}`);
       for (const name of cfg.linkItems) {
         const item = page.getByText(new RegExp(`^\\s*${esc(name)}\\s*$`, 'i')).first();
@@ -148,7 +169,7 @@ async function main() {
       }
       if (links.length) fs.writeFileSync(path.join(dir, 'links.txt'), links.join('\n') + '\n');
       await page.screenshot({ path: path.join(dir, `screenshot_pertemuan_${n}.png`), fullPage: true });
-      report.push('- Perlu dikerjakan manual: Pretest, Posttest, Kuesioner, Forum Diskusi, Penugasan.', '');
+      report.push('- Pretest, Posttest, Kuesioner, Penugasan, dan aktivitas Forum Diskusi tetap dikerjakan manual.', '');
       progress[course.folder] = n;
       saveProgress(progress);
     } catch (e) {
